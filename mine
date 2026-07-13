@@ -1,0 +1,40 @@
+User clicks Send
+        │
+        ▼
+React Button onClick
+        │
+        ▼
+handleSend()
+        │
+        ▼
+sendMessage()
+        │
+        ▼
+Axios POST /chat
+        │
+        ▼
+Browser sends HTTP request
+        │
+        ▼
+FastAPI receives request
+        │
+        ▼
+Pydantic validates JSON
+        │
+        ▼
+chat() executes
+        │
+        ▼
+Returns Python dictionary
+        │
+        ▼
+FastAPI converts it to JSON
+        │
+        ▼
+Axios receives response
+        │
+        ▼
+setResponse(...)
+        │
+        ▼
+React re-renders UI
