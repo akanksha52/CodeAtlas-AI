@@ -1,8 +1,11 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from app.services.chat_service import ChatService
 
 app = FastAPI()
+
+chat_service=ChatService()
 
 app.add_middleware(
     CORSMiddleware,
@@ -18,6 +21,7 @@ class ChatRequest(BaseModel):
 
 @app.post("/chat")
 def chat(request: ChatRequest):
+    response = chat_service.chat(request.message)
     return {
-        "response": f"You said: {request.message}"
+        "response": response
     }
