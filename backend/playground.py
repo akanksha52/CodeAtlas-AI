@@ -8,6 +8,8 @@ parser = Parser(PY_LANGUAGE)
 code = b"""
 def add(a, b):
     return a + b
+def multiply(a, b):
+    return a * b
 """
 
 tree = parser.parse(code)
@@ -34,3 +36,15 @@ for child in function.children:
 for child in function.children:
     if child.type=="identifier":
         print(child.text.decode("utf-8"))
+        
+print()
+print()
+
+from app.parser.python_parser import PythonParser
+
+parser = PythonParser()
+
+symbols = parser.parse(code)
+
+for symbol in symbols:
+    print(symbol)
