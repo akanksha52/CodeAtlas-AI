@@ -1,27 +1,25 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-from app.services.chat_service import ChatService
+from app.api.chat import router as chat_router
+from app.api.health import router as health_router
+from app.core.logging import logger
+from app.core.config import settings
 
-app = FastAPI()
-
-chat_service=ChatService()
+app = FastAPI(title=settings.app_name)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[settings.frontend_origin],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-class ChatRequest(BaseModel):
-    message: str
+app.include_router(chat_router)
+app.include_router(health_router)
 
-
-@app.post("/chat")
-def chat(request: ChatRequest):
-    response = chat_service.chat(request.message)
-    return {
-        "response": response
-    }
+logger.info("=" * 60)
+logger.info(f"{settings.app_name}")
+logger.info(f"Model      : {settings.ollama_model}")
+logger.info(f"API Version: {settings.api_version}")
+logger.info("=" * 60)
