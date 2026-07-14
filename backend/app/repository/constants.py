@@ -1,0 +1,61 @@
+from app.repository.language import Language
+
+IGNORED_DIRECTORIES = {
+    ".git",
+    "node_modules",
+    "venv",
+    "__pycache__",
+    "dist",
+    "build",
+    ".idea",
+    ".vscode",
+}
+
+SUPPORTED_EXTENSIONS = {
+    ".py",
+    ".js",
+    ".ts",
+    ".tsx",
+    ".jsx",
+    ".java",
+    ".cpp",
+    ".c",
+    ".h",
+    ".hpp",
+    ".cs",
+    ".go",
+    ".rs",
+    ".php",
+    ".rb",
+    ".swift",
+    ".kt",
+    ".kts",
+    ".scala",
+    ".sql",
+    ".html",
+    ".css",
+    ".scss",
+    ".json",
+    ".yaml",
+    ".yml",
+    ".xml",
+    ".toml",
+    ".md",
+}
+
+
+EXTENSION_TO_LANGUAGE = {
+    ".py": Language.PYTHON,
+    ".js": Language.JAVASCRIPT,
+    ".ts": Language.TYPESCRIPT,
+    ".tsx": Language.TYPESCRIPT,
+    ".java": Language.JAVA,
+    ".cpp": Language.CPP,
+    ".c": Language.C,
+    ".go": Language.GO,
+    ".rs": Language.RUST,
+    ".md": Language.MARKDOWN,
+    ".json": Language.JSON,
+    ".yaml": Language.YAML,
+    ".yml": Language.YAML,
+}
