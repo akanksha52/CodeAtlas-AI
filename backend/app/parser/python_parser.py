@@ -51,13 +51,18 @@ class PythonParser(CodeParser):
         source_code = code[node.start_byte:node.end_byte].decode("utf-8")
         symbols.append(ClassSymbol(name=name, start_line=node.start_point[0] + 1, end_line=node.end_point[0] + 1, source_code = source_code))
                 
-    def _extract_import(self, node, code, symbols,):
-        if node.type != "import_statement":
-            return
-        for child in node.children:
-            if child.type == "dotted_name":
-                name = self._node_text(child, code)
-        if name is None:
-            return
-        source_code = self._node_text(node, code)
-        symbols.append(ImportSymbol(name=name, source_code = source_code))
+    def _extract_import(self, node: Node, code: bytes, symbols: list[Symbol]):
+        if node.type == "import_statement":
+            source_code = self._node_text(node, code)
+            for child in node.children:
+                if child.type == "dotted_name":
+                    symbols.append(ImportSymbol(name=self._node_text(child, code), source_code=source_code,))
+        elif node.type == "import_from_statement":
+            source_code = self._node_text(node, code)
+            module = None
+            for child in node.children:
+                if child.type == "dotted_name":
+                    module = self._node_text(child, code)
+                    break
+            if module is not None:
+                symbols.append(ImportSymbol(name=module, source_code=source_code,))

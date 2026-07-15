@@ -13,10 +13,6 @@ class RepositoryScanner:
             if any(part in IGNORED_DIRECTORIES for part in path.parts):
                 continue
             if path.is_file() and path.suffix.lower() in SUPPORTED_EXTENSIONS:
-                relative_path=path.relative_to(repository)
-                files.append(RepositoryFile(
-                                path=relative_path,
-                                language=detector.detect(relative_path)))
-                
+                files.append(RepositoryFile(path=path, language=detector.detect(path)))
             files.sort(key=lambda file: file.path)
         return files

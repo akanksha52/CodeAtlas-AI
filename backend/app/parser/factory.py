@@ -2,8 +2,10 @@ from app.parser.python_parser import PythonParser
 from app.repository.language import Language
 
 class ParserFactory:
-    @staticmethod
-    def get(language: Language):
-        if language == Language.PYTHON:
-            return PythonParser()
-        return None
+    def __init__(self):
+        self.parsers = {
+            Language.PYTHON: PythonParser(),
+    }
+    
+    def get_parser(self, language: Language):
+        return self.parsers.get(language)
