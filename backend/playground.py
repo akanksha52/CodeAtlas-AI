@@ -1,50 +1,34 @@
-from tree_sitter import Language, Parser
-import tree_sitter_python as tspython
-
-PY_LANGUAGE = Language(tspython.language())
-
-parser = Parser(PY_LANGUAGE)
-
-code = b"""
-def add(a, b):
-    return a + b
-def multiply(a, b):
-    return a * b
-"""
-
-tree = parser.parse(code)
-
-root = tree.root_node
-
-print(root.type)
-print(root.children)
-
-root = tree.root_node
-
-for child in root.children:
-    print(child.type)
-    
-function = root.children[0]
-
-for child in function.children:
-    print(child.type)
-        
-for child in function.children:
-    if child.type=="identifier":
-        print(code[child.start_byte: child.end_byte].decode("utf-8"))
-        
-for child in function.children:
-    if child.type=="identifier":
-        print(child.text.decode("utf-8"))
-        
-print()
-print()
-
 from app.parser.python_parser import PythonParser
 
 parser = PythonParser()
 
+code = b"""
+import os
+from pathlib import Path
+
+
+class User:
+
+    def login(self, username, password):
+        print("Logging in")
+
+
+def add(a, b):
+    result = a + b
+    return result
+"""
+
 symbols = parser.parse(code)
+
+print("=" * 80)
+print("Extracted Symbols")
+print("=" * 80)
 
 for symbol in symbols:
     print(symbol)
+
+    if hasattr(symbol, "source_code"):
+        print("\nSource Code:")
+        print(symbol.source_code)
+
+    print("-" * 80)

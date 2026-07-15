@@ -4,6 +4,7 @@ from app.repository.models import RepositoryFile
 from app.repository.detector import LanguageDetector
 
 detector=LanguageDetector()
+
 class RepositoryScanner:
     def scan(self, repository_path: str):
         repository = Path(repository_path)

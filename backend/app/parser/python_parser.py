@@ -1,33 +1,63 @@
-from tree_sitter import Language, Parser
+from tree_sitter import Language as TSLanguage, Parser
 import tree_sitter_python as tspython
-from app.repository.symbols import FunctionSymbol
-from tree_sitter import Language, Parser
-import tree_sitter_python as tspython
-from app.repository.symbols import FunctionSymbol
+from app.repository.symbols import FunctionSymbol, ClassSymbol, ImportSymbol
+from app.parser.base import CodeParser
+from app.repository.language import Language
+from app.repository.symbols import Symbol
+from tree_sitter import Node
 
-PY_LANGUAGE = Language(tspython.language())
+PY_LANGUAGE = TSLanguage(tspython.language())
 
-class PythonParser:
+class PythonParser(CodeParser):
     def __init__(self):
         self.parser = Parser(PY_LANGUAGE)
+        
+    def _node_text(self, node, code: bytes,) -> str:
+        return code[node.start_byte:node.end_byte].decode("utf-8")
     
-    def parse(self, code: bytes):
+    def parse(self, code: bytes) -> list[Symbol]:
         tree = self.parser.parse(code)
         root = tree.root_node
-        symbols = []
-        for node in root.children:
-            if node.type != "function_definition":
-                continue
-            for child in node.children:
-                if child.type == "identifier":
-                    name = code[
-                        child.start_byte: child.end_byte
-                        ].decode("utf-8")
-                    symbols.append(
-                        FunctionSymbol(
-                            name=name,
-                            start_line=node.start_point[0] + 1,
-                            end_line=node.end_point[0] + 1,
-                        )
-                    )
+        symbols: list[Symbol] = []
+        self._extract_symbols(root, code, symbols,)
         return symbols
+    
+    def _extract_symbols(self, node: Node, code: bytes, symbols: list[Symbol],):
+        self._extract_function(node, code, symbols,)
+        self._extract_class(node, code, symbols,)
+        self._extract_import(node, code, symbols,)
+        for child in node.children:
+            self._extract_symbols(child, code, symbols,)
+
+    def _extract_function(self, node, code, symbols,):
+        if node.type != "function_definition":
+            return
+        for child in node.children:
+            if child.type == "identifier":
+                name = self._node_text(child, code)
+            elif child.type == "parameters":
+                parameters = self._node_text(child, code)
+        source_code = code[node.start_byte:node.end_byte].decode("utf-8")
+        signature = f"{name}{parameters}"
+        symbols.append(FunctionSymbol(name=name, signature=signature, source_code=source_code, start_line=node.start_point[0] + 1,
+        end_line=node.end_point[0] + 1,))
+        
+    def _extract_class(self, node, code, symbols,):
+        if node.type != "class_definition":
+            return
+        for child in node.children:
+            if child.type == "identifier":
+                name = self._node_text(child, code)
+        source_code = code[node.start_byte:node.end_byte].decode("utf-8")
+        symbols.append(ClassSymbol(name=name, start_line=node.start_point[0] + 1, end_line=node.end_point[0] + 1, source_code = source_code))
+                
+    def _extract_import(self, node, code, symbols,):
+        if node.type != "import_statement":
+            return
+        for child in node.children:
+            if child.type == "dotted_name":
+                name = self._node_text(child, code)
+        if name is None:
+            return
+        source_code = self._node_text(node, code)
+        symbols.append(ImportSymbol(name=name, source_code = source_code))
