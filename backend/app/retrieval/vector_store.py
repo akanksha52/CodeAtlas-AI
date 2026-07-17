@@ -1,34 +1,40 @@
 import faiss
 import numpy as np
 
+from app.retrieval.models import CodeChunk
+
 
 class VectorStore:
 
     def __init__(self, dimension: int):
         self.index = faiss.IndexFlatL2(dimension)
-        self.embeddings = []
+        self.chunks: list[CodeChunk] = []
 
-    def add(self, embeddings):
+    def add(self, chunks: list[CodeChunk]) -> None:
 
         vectors = np.array(
-            [e.vector for e in embeddings],
-            dtype="float32"
+            [chunk.embedding for chunk in chunks],
+            dtype=np.float32,
         )
 
         self.index.add(vectors)
+        self.chunks.extend(chunks)
 
-        self.embeddings.extend(embeddings)
+    def search(
+        self,
+        embedding: list[float],
+        k: int = 5,
+    ) -> list[CodeChunk]:
 
-    def search(self, vector, k=5):
-
-        vector = np.array(
-            [vector],
-            dtype="float32"
+        query = np.array(
+            [embedding],
+            dtype=np.float32,
         )
 
-        distances, indices = self.index.search(vector, k)
+        _, indices = self.index.search(query, k)
 
         return [
-            self.embeddings[i]
+            self.chunks[i]
             for i in indices[0]
+            if i != -1
         ]

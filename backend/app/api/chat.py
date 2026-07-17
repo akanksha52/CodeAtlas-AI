@@ -1,25 +1,28 @@
 from fastapi import APIRouter, HTTPException
-from app.services.chat_service import ChatService
-from app.core.config import settings
 from app.schemas.chat import ChatRequest, ChatResponse
-from app.core.exception import LLMServiceError
+from app.services.index_manager import IndexManager
+from app.services.rag_service import RAGService
 
-router = APIRouter(
-    prefix="/api/v1",
-    tags=["Chat"],
-)
+router = APIRouter()
 
-chat_service=ChatService()
+index_manager = IndexManager()
+if not index_manager.ready():
+    index_manager.build("sample_repo")
+
+rag_service = RAGService(index_manager)
+
 
 @router.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest):
     try:
-        response = chat_service.chat(request.message)
+        response = rag_service.ask(request.message)
+
         return ChatResponse(
             response=response
         )
-    except LLMServiceError as e:
+
+    except Exception as e:
         raise HTTPException(
-            status_code=503,
-            detail=str(e)
+            status_code=500,
+            detail=str(e),
         )

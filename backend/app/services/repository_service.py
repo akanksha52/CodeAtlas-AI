@@ -1,20 +1,10 @@
-from pathlib import Path
-
-from app.parser.factory import ParserFactory
-from app.repository.scanner import RepositoryScanner
+from app.repository.indexer import RepositoryIndex
+from app.repository.indexer import RepositoryIndexer
 
 
 class RepositoryService:
     def __init__(self):
-        self.scanner = RepositoryScanner()
+        self.indexer = RepositoryIndexer()
 
-    def analyze(self, repository_path: str):
-        files = self.scanner.scan(repository_path)
-        for repository_file in files:
-            code = Path(repository_path, repository_file.path).read_bytes()
-            parser = ParserFactory.get(repository_file.language)
-            if parser is None:
-                continue
-            repository_file.symbols = parser.parse(code)
-
-        return files
+    def analyze(self, repository_path: str) -> RepositoryIndex:
+        return self.indexer.index(repository_path)

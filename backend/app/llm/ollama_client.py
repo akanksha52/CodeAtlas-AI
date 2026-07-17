@@ -1,4 +1,4 @@
-from ollama import chat
+from ollama import chat, embed
 from app.core.config import settings
 from app.core.logging import logger
 from app.core.exception import LLMServiceError
@@ -26,3 +26,10 @@ class OllamaClient:
             raise LLMServiceError(
                 "Unable to communicate with the AI model."
             ) from e
+            
+    def embed(self, text: str) -> list[float]:
+        response = embed(
+            model=settings.embedding_model,
+            input=text,
+        )
+        return response["embeddings"][0]
