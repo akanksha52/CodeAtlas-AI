@@ -16,8 +16,10 @@ app.add_middleware(
 )
 index_manager = IndexManager()
 index_manager.build("sample_repo")
+
 app.include_router(chat_router, prefix="/api/v1",)
 app.include_router(health_router)
+
 logger.info("=" * 60)
 logger.info(f"{settings.app_name}")
 logger.info(f"Model      : {settings.ollama_model}")
