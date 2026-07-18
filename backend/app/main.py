@@ -4,7 +4,10 @@ from app.api.chat import router as chat_router
 from app.api.health import router as health_router
 from app.core.logging import logger
 from app.core.config import settings
-from app.services.index_manager import IndexManager
+from app.api.index import router as index_router
+from app.api.stats import router as stats_router
+from app.api.tree import router as tree_router
+from app.core.dependencies import index_manager
 
 app = FastAPI(title=settings.app_name)
 app.add_middleware(
@@ -14,12 +17,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-index_manager = IndexManager()
 index_manager.build("sample_repo")
-
 app.include_router(chat_router, prefix="/api/v1",)
 app.include_router(health_router)
-
+app.include_router(index_router, prefix=f"/api/{settings.api_version}", tags=["Index"],)
+app.include_router(stats_router, prefix=f"/api/{settings.api_version}", tags=["Stats"],)
+app.include_router(tree_router, prefix=f"/api/{settings.api_version}", tags=["Repository"],)
 logger.info("=" * 60)
 logger.info(f"{settings.app_name}")
 logger.info(f"Model      : {settings.ollama_model}")
