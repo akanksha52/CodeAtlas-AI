@@ -17,21 +17,19 @@ def get_tree():
             detail="Repository not indexed."
         )
 
-    files = []
-
-    for repository_file in index_manager.repository_index.files:
-
-        files.append(
-            FileNode(
-                path=repository_file.path,
-                language=repository_file.language.value,
-            )
+    files = [
+        FileNode(
+            path=repository_file.path.as_posix(),
+            language=repository_file.language.value,
+            symbols=len(repository_file.symbols),
         )
+        for repository_file in index_manager.files
+    ]
 
     files.sort(key=lambda file: file.path)
 
     return TreeResponse(
-                    repository=index_manager.repository_path,
-                    total_files=len(files),
-                    files=files,
-                )
+        repository=index_manager.repository_path,
+        total_files=len(files),
+        files=files,
+    )

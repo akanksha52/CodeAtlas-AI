@@ -41,3 +41,24 @@ class IndexManager:
             "files": len(self.repository_index.files),
             "chunks": len(self.chunks)
         }
+        
+    @property
+    def chunk_count(self):
+        return len(self.chunks)
+
+    @property
+    def indexed(self):
+        return self.vector_store is not None
+    
+    @property
+    def files(self):
+        return self.repository_index.files
+
+
+    def get_file(self, path: str):
+
+        for file in self.files:
+            if file.path.as_posix() == path:
+                return file
+
+        return None

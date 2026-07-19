@@ -8,6 +8,8 @@ from app.api.index import router as index_router
 from app.api.stats import router as stats_router
 from app.api.tree import router as tree_router
 from app.core.dependencies import index_manager
+from app.api.file import router as file_router
+from app.api.explain import router as explain_router
 
 app = FastAPI(title=settings.app_name)
 app.add_middleware(
@@ -23,6 +25,9 @@ app.include_router(health_router)
 app.include_router(index_router, prefix=f"/api/{settings.api_version}", tags=["Index"],)
 app.include_router(stats_router, prefix=f"/api/{settings.api_version}", tags=["Stats"],)
 app.include_router(tree_router, prefix=f"/api/{settings.api_version}", tags=["Repository"],)
+app.include_router(file_router, prefix=f"/api/{settings.api_version}", tags=["Repository"],)
+app.include_router(explain_router, prefix=f"/api/{settings.api_version}", tags=["Repository"],)
+
 logger.info("=" * 60)
 logger.info(f"{settings.app_name}")
 logger.info(f"Model      : {settings.ollama_model}")
