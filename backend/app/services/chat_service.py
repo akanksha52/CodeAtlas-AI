@@ -1,9 +1,10 @@
 from app.llm.ollama_client import OllamaClient
 from app.core.logging import logger
+from app.llm.factory import LLMFactory
 
 class ChatService:
     def __init__(self):
-        self.client = OllamaClient()
+        self.client = LLMFactory.get_client()
 
     def chat(self, message: str) -> str:
         logger.info("Received chat request")

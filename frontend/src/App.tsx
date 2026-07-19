@@ -1,35 +1,27 @@
 import { useState } from "react";
-import { sendMessage } from "./services/chatService";
 
-function App() {
-  const [message, setMessage] = useState("");
-  const [response, setResponse] = useState("");
+import LandingPage from "./pages/LandingPage";
+import Workspace from "./pages/Workspace";
 
-  async function handleSend() {
-    if (!message.trim()) return;
+export default function App() {
 
-    const data = await sendMessage(message);
-    setResponse(data.response);
-  }
+    const [indexed, setIndexed] =
+        useState(false);
 
-  return (
-    <main>
-      <h1>AI Code Intelligence Platform</h1>
+    if (!indexed) {
 
-      <input
-        type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Ask something..."
-      />
+        return (
 
-      <button onClick={handleSend}>
-        Send
-      </button>
+            <LandingPage
+                onIndexed={() =>
+                    setIndexed(true)
+                }
+            />
 
-      <p>{response}</p>
-    </main>
-  );
+        );
+
+    }
+
+    return <Workspace />;
+
 }
-
-export default App;
