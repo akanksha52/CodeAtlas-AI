@@ -24,6 +24,7 @@ class VectorStore:
         self,
         embedding: list[float],
         k: int = 5,
+        threshold: float = 1.1,
     ) -> list[CodeChunk]:
 
         query = np.array(
@@ -31,10 +32,19 @@ class VectorStore:
             dtype=np.float32,
         )
 
-        _, indices = self.index.search(query, k)
+        distances, indices = self.index.search(query, k)
 
-        return [
-            self.chunks[i]
-            for i in indices[0]
-            if i != -1
-        ]
+        results = []
+
+        for dist, idx in zip(distances[0], indices[0]):
+
+            
+            if idx == -1:
+                continue
+
+            if dist > threshold:
+                continue
+
+            results.append(self.chunks[idx])
+
+        return results

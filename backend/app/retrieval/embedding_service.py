@@ -1,7 +1,6 @@
 from app.llm.ollama_client import OllamaClient
 from app.retrieval.models import CodeChunk
 
-
 class EmbeddingService:
     def __init__(self):
         self.client = OllamaClient()

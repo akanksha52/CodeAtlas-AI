@@ -29,7 +29,11 @@ app.include_router(file_router, prefix=f"/api/{settings.api_version}", tags=["Re
 app.include_router(explain_router, prefix=f"/api/{settings.api_version}", tags=["Repository"],)
 
 logger.info("=" * 60)
-logger.info(f"{settings.app_name}")
-logger.info(f"Model      : {settings.ollama_model}")
+logger.info(settings.app_name)
+logger.info(f"Provider   : {settings.llm_provider}")
+if settings.llm_provider.lower() == "gemini":
+    logger.info(f"Model      : {settings.gemini_model}")
+else:
+    logger.info(f"Model      : {settings.ollama_model}")
 logger.info(f"API Version: {settings.api_version}")
 logger.info("=" * 60)

@@ -1,4 +1,4 @@
-from app.llm.ollama_client import OllamaClient
+from app.llm.factory import LLMFactory
 from app.retrieval.prompt_builder import PromptBuilder
 from app.retrieval.retriever import Retriever
 from app.services.index_manager import IndexManager
@@ -9,7 +9,7 @@ class RAGService:
     def __init__(self, manager: IndexManager):
         self.manager = manager
         self.prompt_builder = PromptBuilder()
-        self.ollama = OllamaClient()
+        self.client = LLMFactory.get_client()
 
     def ask(self, question: str):
 
@@ -29,7 +29,7 @@ class RAGService:
             chunks=chunks,
         )
 
-        answer = self.ollama.generate(prompt)
+        answer = self.client.generate(prompt)
 
         sources = []
 

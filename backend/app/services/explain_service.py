@@ -1,13 +1,13 @@
 from pathlib import Path
 
 from app.core.dependencies import index_manager
-from app.llm.ollama_client import OllamaClient
+from app.llm.factory import LLMFactory
 
 
 class ExplainService:
 
     def __init__(self):
-        self.client = OllamaClient()
+        self.client = LLMFactory.get_client()
 
     def explain(self, path: str):
 

@@ -1,14 +1,18 @@
 from app.core.config import settings
+from app.llm.groq_client import GroqClient
 from app.llm.ollama_client import OllamaClient
-from app.llm.gemini_client import GeminiClient
-
 
 class LLMFactory:
 
     @staticmethod
     def get_client():
+        provider = settings.llm_provider.lower()
+        if provider == "ollama":
+            return OllamaClient()
 
-        if settings.llm_provider.lower() == "gemini":
-            return GeminiClient()
+        if provider == "groq":
+            return GroqClient()
 
-        return OllamaClient()
+        raise ValueError(
+            f"Unsupported provider: {provider}"
+        )

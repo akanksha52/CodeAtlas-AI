@@ -1,4 +1,3 @@
-from app.llm.ollama_client import OllamaClient
 from app.core.logging import logger
 from app.llm.factory import LLMFactory
 
