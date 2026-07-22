@@ -282,3 +282,8 @@ This project is licensed under the MIT License.
 * FAISS
 * Ollama
 * Grok API
+
+
+## Deployment Note
+
+The live deployment demonstrates the backend API and application architecture. Repository indexing requires filesystem access to the target repository. Therefore, the complete indexing and RAG workflow is intended to run locally, where the backend can access local repositories. The deployed backend is primarily provided for API demonstration purposes.
