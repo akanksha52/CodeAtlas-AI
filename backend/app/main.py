@@ -19,7 +19,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-index_manager.build("sample_repo")
+if __name__ == "__main__":
+    index_manager.build("sample_repo")
+    
 app.include_router(chat_router, prefix="/api/v1",)
 app.include_router(health_router)
 app.include_router(index_router, prefix=f"/api/{settings.api_version}", tags=["Index"],)
