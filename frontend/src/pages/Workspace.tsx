@@ -31,9 +31,9 @@ export default function Workspace() {
 
             <Header />
 
-            <div className="flex flex-1 overflow-hidden">
+            <div className="flex flex-1 flex-col lg:flex-row overflow-hidden">
 
-                <aside className="w-72 border-r border-zinc-800 overflow-auto p-4">
+                <aside className="w-full lg:w-72 h-56 lg:h-auto border-r border-zinc-800 overflow-auto p-4">
 
                     <RepositoryTree
                         onOpenFile={openFile}
@@ -51,7 +51,7 @@ export default function Workspace() {
 
                 </main>
 
-                <aside className="w-[420px] border-l border-zinc-800 flex flex-col bg-zinc-950">
+                <aside className="w-full lg:w-[420px] h-[45vh] lg:h-auto border-l border-zinc-800 flex flex-col bg-zinc-950">
                     <div className="border-b border-zinc-800 p-4">
 
                         <h2 className="text-white font-semibold">

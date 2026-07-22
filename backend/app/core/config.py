@@ -1,11 +1,12 @@
+from typing import Optional
+
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-import os
+
 
 class Settings(BaseSettings):
-
     app_name: str
     api_version: str
-    frontend_origin: str
 
     llm_provider: str = "ollama"
 
@@ -13,16 +14,33 @@ class Settings(BaseSettings):
     ollama_host: str
 
     gemini_model: str = "gemini-2.5-flash"
-    GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-    GCP_API_KEY = os.getenv("GCP_API_KEY")
+
+    groq_api_key: Optional[str] = Field(
+        default=None,
+        alias="GROQ_API_KEY"
+    )
+
+    gcp_api_key: Optional[str] = Field(
+        default=None,
+        alias="GCP_API_KEY"
+    )
+
     groq_model: str = "llama-3.3-70b-versatile"
 
     embedding_model: str = "nomic-embed-text"
-    
+
     retrieval_threshold: float = 1.1
 
     model_config = SettingsConfigDict(
         env_file=".env",
-        extra="ignore"
+        extra="ignore",
+        populate_by_name=True,
     )
+    
+    frontend_origin: str = Field(
+    default="http://localhost:5173",
+    alias="FRONTEND_ORIGIN"
+    )
+
+
 settings = Settings()

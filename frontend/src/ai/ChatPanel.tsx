@@ -179,7 +179,7 @@ export default function ChatPanel({ onOpenFile }: Props)
 
                 <div className="flex gap-2">
 
-                    <input
+                    <input disabled={loading}
                         className="flex-1 rounded-lg bg-zinc-800 p-3 text-white outline-none"
                         placeholder="Ask anything about this repository..."
                         value={message}
@@ -187,7 +187,8 @@ export default function ChatPanel({ onOpenFile }: Props)
                             setMessage(e.target.value)
                         }
                         onKeyDown={(e) => {
-                            if (e.key === "Enter") {
+                            if (e.key === "Enter" && !e.shiftKey) {
+                                e.preventDefault();
                                 send();
                             }
                         }}
@@ -196,7 +197,7 @@ export default function ChatPanel({ onOpenFile }: Props)
                     <button
                         onClick={send}
                         disabled={loading}
-                        className="rounded-lg bg-blue-600 px-4 hover:bg-blue-700 disabled:opacity-40"
+                        className="rounded-lg bg-blue-600 px-4 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                         <Send
                             size={18}

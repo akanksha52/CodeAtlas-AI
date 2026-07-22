@@ -32,7 +32,6 @@ export default function LandingPage({
 
             setLoading(true);
 
-            console.log("Calling /index...");
 
             const res = await axios.post(
                 `${API}/index`,
@@ -49,7 +48,6 @@ export default function LandingPage({
 
         } catch (e: any) {
 
-            console.error(e);
 
             setError(
                 e.response?.data?.detail ??
@@ -86,7 +84,7 @@ export default function LandingPage({
 
                     <label className="text-zinc-300">
 
-                        Repository Path
+                        Local Repository Path
 
                     </label>
 
@@ -114,20 +112,15 @@ export default function LandingPage({
                 }
 
                 <button
-                    className="mt-8 w-full bg-blue-600 hover:bg-blue-700 transition rounded-lg p-4 text-white font-semibold"
+                    disabled={loading}
+                    className="mt-8 w-full bg-blue-600 hover:bg-blue-700 transition rounded-lg p-4 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={handleIndex}
                 >
-
                     {
-
                         loading
-
                             ? "Indexing..."
-
                             : "Index Repository"
-
                     }
-
                 </button>
 
                 <div className="mt-10 text-zinc-500">
